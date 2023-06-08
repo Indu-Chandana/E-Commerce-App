@@ -10,7 +10,7 @@ import { COLORS, SIZES, constants, FONTS } from "../../constants"
 import Walkthrough1 from './Walkthrough1';
 import Walkthrough2 from './Walkthrough2';
 
-const Walkthrough = () => {
+const Walkthrough = ({ navigation }) => {
 
     // Walkthrough 2
     const [walkthrough2Animate, setWalkthrough2Animate] = React.useState(false);
@@ -108,6 +108,13 @@ const Walkthrough = () => {
                         }}
                         labelStyle={{
                             ...FONTS.h3
+                        }}
+
+                        onPress={() => {
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'AuthMain' }]
+                            })
                         }}
                     />
                 </View>
