@@ -53,7 +53,7 @@ const CountryDropDown = ({ containerStyle, selectedCountry, onPress }) => {
                 source={icons.arrow_down_fill}
                 style={{
                     width: 30,
-                    height: 30
+                    height: 30,
                 }}
             />
         </TouchableOpacity>

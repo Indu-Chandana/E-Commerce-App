@@ -18,7 +18,8 @@ import {
     TextButton,
     CountryDropDown,
     FormInput,
-    IconButton
+    IconButton,
+    CheckBox
 } from "../../components";
 
 import {
@@ -39,7 +40,9 @@ const AuthMain = () => {
     const [email, setEmail] = React.useState("")
     const [name, setName] = React.useState("")
     const [phone, setPhone] = React.useState("")
+    const [selectedCountry, setSelectedCountry] = React.useState(null)
     const [password, setPassword] = React.useState("")
+    const [termsChecked, setTermsChecked] = React.useState(false)
 
     // Animation State
 
@@ -62,87 +65,23 @@ const AuthMain = () => {
         fetch("https://restcountries.com/v2/all")
             .then(response => response.json())
             .then(data => {
+
                 let countryData = data.map(item => {
                     return {
                         code: item.alpha2Code,
                         name: item.name,
                         callingCode: `+${item.callingCodes[0]}`,
-                        flag: `https://countryflagsapi.com/png/${item.alpha2Code}`
+                        // flag: `https://countryflagsapi.com/png/${item.alpha2Code}`
+                        flag: `https://flagsapi.com/${item.alpha2Code}/shiny/64.png`
+
                     }
                 })
-
+                // console.log('countryData ::', countryData[0])
                 setCountries(countryData)
             })
     }, [])
 
     // Render
-
-    function renderCountryModal() {
-        return (
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showCountryModal}
-            >
-                <TouchableWithoutFeedback
-                    onPress={() => setShowCountryModal(false)}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: COLORS.dark80
-                        }}
-                    >
-                        <View
-                            style={{
-                                height: 400,
-                                width: SIZES.width * 0.8,
-                                backgroundColor: COLORS.light,
-                                borderRadius: SIZES.radius
-                            }}
-                        >
-                            <FlatList
-                                data={countries}
-                                keyExtractor={(item) => item.code}
-                                contentContainerStyle={{
-                                    paddingHorizontal: SIZES.padding,
-                                    paddingBottom: SIZES.padding,
-                                }}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <TouchableOpacity
-                                            style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
-                                                marginTop: SIZES.radius
-                                            }}
-                                            onPress={() => {
-                                                console.log(item)
-                                                setSelectedCountry(item)
-                                                setShowCountryModal(false)
-                                            }}
-                                        >
-                                            <Image
-                                                source={{ uri: item.flag }}
-                                                resizeMode="contain"
-                                                style={{
-                                                    width: 40,
-                                                    height: 30
-                                                }}
-                                            />
-                                            <Text style={{ flex: 1, marginLeft: SIZES.radius, ...FONTS.body3 }}>{item.name}</Text>
-                                        </TouchableOpacity>
-                                    )
-                                }}
-                            />
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-        )
-    }
 
     function renderSignIn() {
         return (
@@ -184,7 +123,7 @@ const AuthMain = () => {
                             <FormInput
                                 containerStyle={{
                                     borderRadius: SIZES.radius,
-                                    backgroundColor: COLORS.error,
+                                    // backgroundColor: COLORS.error,
                                 }}
                                 // inputContainerStyle={}
                                 placeholder="Email"
@@ -207,7 +146,7 @@ const AuthMain = () => {
                                 containerStyle={{
                                     marginTop: SIZES.radius,
                                     borderRadius: SIZES.radius,
-                                    backgroundColor: COLORS.error,
+                                    // backgroundColor: COLORS.error,
                                 }}
                                 // inputContainerStyle={}
                                 placeholder="Password"
@@ -308,15 +247,193 @@ const AuthMain = () => {
                             contentContainerStyle={{
                                 flexGrow: 1,
                                 marginTop: SIZES.padding,
-                                paddingBottom: SIZES.padding * 2
+                                paddingBottom: SIZES.padding * 1,
                             }}
-                        ></KeyboardAwareScrollView>
+                        >
+
+                            {/* name */}
+                            <FormInput
+                                containerStyle={{
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.error
+                                }}
+                                placeholder="Name"
+                                value={name}
+                                onChange={(text) => setName(text)}
+                                prependComponent={
+                                    <Image
+                                        source={icons.person}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            marginRight: SIZES.base
+                                        }}
+                                    />
+                                }
+                            />
+
+                            {/* email */}
+                            <FormInput
+                                containerStyle={{
+                                    marginTop: SIZES.radius,
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.error
+                                }}
+                                placeholder="Email"
+                                value={email}
+                                onChange={(text) => setEmail(text)}
+                                prependComponent={
+                                    <Image
+                                        source={icons.email}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            marginRight: SIZES.base
+                                        }}
+                                    />
+                                }
+                            />
+
+                            {/* Phone */}
+                            <FormInput
+                                containerStyle={{
+                                    marginTop: SIZES.radius,
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.error
+                                }}
+                                placeholder="Phone"
+                                value={phone}
+                                onChange={(text) => setPhone(text)}
+                                prependComponent={
+                                    <Image
+                                        source={icons.phone}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            marginRight: SIZES.base
+                                        }}
+                                    />
+                                }
+                            />
+
+                            {/* Country */}
+                            <CountryDropDown
+                                containerStyle={{
+                                    marginTop: SIZES.radius
+                                }}
+                                selectedCountry={selectedCountry}
+                                onPress={() => setShowCountryModal(!showCountryModal)}
+                            />
+
+                            {/* Passsword */}
+                            <FormInput
+                                containerStyle={{
+                                    marginTop: SIZES.radius,
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.error,
+                                }}
+                                // inputContainerStyle={}
+                                placeholder="Password"
+                                value={password}
+                                secureTextEntry={!isVisible}
+                                onChange={(text) => setPassword(text)}
+                                prependComponent={
+                                    <Image
+                                        source={icons.lock}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            marginRight: SIZES.base
+                                        }}
+                                    />
+                                }
+                                appendComponent={
+                                    <IconButton
+                                        icon={isVisible ? icons.eye_off : icons.eye}
+                                        iconStyle={{
+                                            tintColor: COLORS.grey
+                                        }}
+                                        onPress={() => setIsVisible(!isVisible)}
+                                    />
+                                }
+                            />
+
+                            {/* Terms and Conditions */}
+                            <CheckBox
+                                containerStyle={{
+                                    marginTop: SIZES.radius
+                                }}
+                                isSelected={termsChecked}
+                                onPress={() => setTermsChecked(!termsChecked)}
+                            />
+                        </KeyboardAwareScrollView>
+
+                        <TextButton
+                            label="Create Account"
+                            contentContainerStyle={{
+                                height: 55,
+                                borderRadius: SIZES.radius,
+                                backgroundColor: COLORS.primary
+                            }}
+                            labelStyle={{
+                                ...FONTS.h3
+                            }}
+                            onPress={() => console.log("Create Account")}
+                        />
 
                     </View>
                 </Shadow>
 
 
             </MotiView>
+        )
+    }
+
+    function renderAuthContainerFooter() {
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    height: 80,
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
+                    marginTop: -30,
+                    marginHorizontal: SIZES.radius,
+                    paddingBottom: SIZES.radius,
+                    borderBottomLeftRadius: SIZES.radius,
+                    borderBottomRightRadius: SIZES.radius,
+                    backgroundColor: COLORS.light60,
+                    zIndex: 0
+                }}
+            >
+                <Text
+                    style={{
+                        color: COLORS.grey,
+                        ...FONTS.body5
+                    }}
+                >{mode == "signIn" ? "Don't have an account?" : "I already have an account."}</Text>
+
+                <TextButton
+                    label={mode == "signIn" ? "Create New Account" : "Sign In"}
+                    contentContainerStyle={{
+                        marginLeft: SIZES.base,
+                        backgroundColor: null,
+                    }}
+                    labelStyle={{
+                        color: COLORS.support3,
+                        ...FONTS.h5
+                    }}
+                    onPress={() => {
+                        if (animationState.current === 'signIn') {
+                            animationState.transitionTo('signUp') // transition animation to the 'signUp'
+                            setMode('signUp')
+                        } else {
+                            animationState.transitionTo('signIn')
+                            setMode("signIn")
+                        }
+                    }}
+                />
+            </View>
         )
     }
 
@@ -327,6 +444,74 @@ const AuthMain = () => {
             return renderSignUp()
         }
     }
+
+    function renderCountryModal() {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showCountryModal}
+            >
+                <TouchableWithoutFeedback
+                    onPress={() => setShowCountryModal(false)}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: COLORS.dark80
+                        }}
+                    >
+                        <View
+                            style={{
+                                height: 400,
+                                width: SIZES.width * 0.8, // 80%
+                                backgroundColor: COLORS.light,
+                                borderRadius: SIZES.radius
+                            }}
+                        >
+                            <FlatList
+                                data={countries}
+                                keyExtractor={(item) => item.code}
+                                contentContainerStyle={{
+                                    paddingHorizontal: SIZES.padding,
+                                    paddingBottom: SIZES.padding,
+                                }}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <TouchableOpacity
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                marginTop: SIZES.radius
+                                            }}
+                                            onPress={() => {
+                                                console.log(item)
+                                                setSelectedCountry(item)
+                                                setShowCountryModal(false)
+                                            }}
+                                        >
+                                            <Image
+                                                source={{ uri: item.flag }}
+                                                resizeMode="contain"
+                                                style={{
+                                                    width: 40,
+                                                    height: 30
+                                                }}
+                                            />
+                                            <Text style={{ flex: 1, marginLeft: SIZES.radius, ...FONTS.body3 }}>{item.name}</Text>
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            />
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+        )
+    }
+
 
     return (
         <View style={{
@@ -346,11 +531,18 @@ const AuthMain = () => {
             />
 
             {/* Auth Container */}
-            <View>
+            <View
+                style={{
+                    zIndex: 1 // we use that in navigation (login & register) links -> renderAuthContainerFooter()
+                }}
+            >
                 {renderAuthContainer()}
+
+                {/* Country Modal */}
+                {renderCountryModal()}
             </View>
 
-            <TextButton
+            {/* <TextButton
                 label="Toggle"
                 onPress={() => {
                     if (animationState.current === 'signIn') {
@@ -361,7 +553,9 @@ const AuthMain = () => {
                         setMode("signIn")
                     }
                 }}
-            />
+            /> */}
+
+            {renderAuthContainerFooter()}
         </View>
     )
 }
@@ -372,7 +566,7 @@ const styles = StyleSheet.create({
         width: SIZES.width - (SIZES.padding * 2),
         padding: SIZES.padding,
         borderRadius: SIZES.radius,
-        backgroundColor: COLORS.light
+        backgroundColor: COLORS.light,
     }
 })
 
