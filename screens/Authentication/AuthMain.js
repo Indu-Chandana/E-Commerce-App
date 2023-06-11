@@ -14,11 +14,11 @@ import { MotiView, useAnimationState } from "moti"
 import { Shadow } from "react-native-shadow-2"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
-
 import {
     TextButton,
     CountryDropDown,
-    FormInput
+    FormInput,
+    IconButton
 } from "../../components";
 
 import {
@@ -33,6 +33,13 @@ const AuthMain = () => {
     // Country
     const [countries, setCountries] = React.useState([])
     const [showCountryModal, setShowCountryModal] = React.useState(false)
+
+    const [isVisible, setIsVisible] = React.useState(false)
+
+    const [email, setEmail] = React.useState("")
+    const [name, setName] = React.useState("")
+    const [phone, setPhone] = React.useState("")
+    const [password, setPassword] = React.useState("")
 
     // Animation State
 
@@ -170,7 +177,7 @@ const AuthMain = () => {
                             extraScrollHeight={-300}
                             contentContainerStyle={{
                                 flexGrow: 1,
-                                justifyContent: 'center'
+                                justifyContent: 'center',
                             }}
                         >
                             {/* Email */}
@@ -178,9 +185,11 @@ const AuthMain = () => {
                                 containerStyle={{
                                     borderRadius: SIZES.radius,
                                     backgroundColor: COLORS.error,
-
                                 }}
+                                // inputContainerStyle={}
                                 placeholder="Email"
+                                value={email}
+                                onChange={(text) => setEmail(text)}
                                 prependComponent={
                                     <Image
                                         source={icons.email}
@@ -194,7 +203,69 @@ const AuthMain = () => {
                             />
 
                             {/* Passsword */}
+                            <FormInput
+                                containerStyle={{
+                                    marginTop: SIZES.radius,
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.error,
+                                }}
+                                // inputContainerStyle={}
+                                placeholder="Password"
+                                value={password}
+                                secureTextEntry={!isVisible}
+                                onChange={(text) => setPassword(text)}
+                                prependComponent={
+                                    <Image
+                                        source={icons.lock}
+                                        style={{
+                                            width: 25,
+                                            height: 25,
+                                            marginRight: SIZES.base
+                                        }}
+                                    />
+                                }
+                                appendComponent={
+                                    <IconButton
+                                        icon={isVisible ? icons.eye_off : icons.eye}
+                                        iconStyle={{
+                                            tintColor: COLORS.grey
+                                        }}
+                                        onPress={() => setIsVisible(!isVisible)}
+                                    />
+                                }
+                            />
+
+                            <View style={{
+                                // backgroundColor: 'green',
+                                alignItems: 'flex-end'
+                            }}>
+                                <TextButton
+                                    label="Forgot Password?"
+                                    contentContainerStyle={{
+                                        marginTop: SIZES.radius,
+                                        backgroundColor: null
+                                    }}
+                                    labelStyle={{
+                                        color: COLORS.support3,
+                                        ...FONTS.h4
+                                    }}
+                                />
+                            </View>
+
                         </KeyboardAwareScrollView>
+
+                        <TextButton
+                            label="Log In"
+                            contentContainerStyle={{
+                                height: 55,
+                                borderRadius: SIZES.radius,
+                                backgroundColor: COLORS.primary
+                            }}
+                            labelStyle={{
+                                ...FONTS.h3
+                            }}
+                            onPress={() => console.log("Log In")}
+                        />
 
                     </View>
                 </Shadow>
@@ -219,6 +290,27 @@ const AuthMain = () => {
                         style={styles.authContainer}
 
                     >
+                        <Text
+                            style={{
+                                lineHeight: 45,
+                                // color: COLORS.dark,
+                                ...FONTS.h1
+                            }}
+                        >
+                            Create new account
+                        </Text>
+
+                        <KeyboardAwareScrollView
+                            enableOnAndroid={true}
+                            keyboardDismissMode='on-drag'
+                            keyboardShouldPersistTaps={"handled"}
+                            extraScrollHeight={-300}
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                marginTop: SIZES.padding,
+                                paddingBottom: SIZES.padding * 2
+                            }}
+                        ></KeyboardAwareScrollView>
 
                     </View>
                 </Shadow>
@@ -278,8 +370,7 @@ const styles = StyleSheet.create({
     authContainer: {
         flex: 1,
         width: SIZES.width - (SIZES.padding * 2),
-        paddingHorizontal: SIZES.padding,
-        paddingVertical: SIZES.radius,
+        padding: SIZES.padding,
         borderRadius: SIZES.radius,
         backgroundColor: COLORS.light
     }

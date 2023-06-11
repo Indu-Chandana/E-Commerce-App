@@ -34,12 +34,14 @@ const FormInput = ({
                 }}
             >
                 {prependComponent}
+
                 <TextInput
                     style={{
                         flex: 1,
                         paddingVertical: 0,
                         ...FONTS.body3,
-                        ...inputStyle
+                        ...inputStyle,
+                        // backgroundColor: 'blue'
                     }}
                     value={value}
                     placeholder={placeholder}
@@ -53,6 +55,8 @@ const FormInput = ({
                     onPressIn={onPress}
                     editable={editable}
                 />
+
+                {appendComponent}
             </View>
         </View>
     )

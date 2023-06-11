@@ -133,7 +133,7 @@ const Walkthrough = ({ navigation }) => {
                 data={constants.walkthrough}
                 keyExtractor={(item) => item.id}
                 horizontal
-                snapToInterval={SIZES.width}
+                snapToInterval={SIZES.width}  // use for detect what is the display width.
                 decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
