@@ -51,7 +51,7 @@ const AuthMain = () => {
             height: SIZES.height * 0.55
         },
         signUp: {
-            height: SIZES.height * 0.7
+            height: SIZES.height * 0.73
         }
     })
 
@@ -512,6 +512,53 @@ const AuthMain = () => {
         )
     }
 
+    function renderSocialLogins() {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: -30,
+                    zIndex: -1
+                }}
+            >
+                <Text>
+                    OR login with
+                </Text>
+
+                <View
+                    style={{
+                        flexDirection: "row",
+                        marginTop: SIZES.radius
+                    }}
+                >
+                    <IconButton
+                        icon={icons.twitter}
+                        iconStyle={{ tintColor: COLORS.dark }}
+                        containerStyle={styles.socialButtonContainer}
+                    />
+
+                    <IconButton
+                        icon={icons.google}
+                        iconStyle={{ tintColor: COLORS.dark }}
+                        containerStyle={{
+                            ...styles.socialButtonContainer,
+                            marginLeft: SIZES.radius
+                        }}
+                    />
+                    <IconButton
+                        icon={icons.linkedin}
+                        iconStyle={{ tintColor: COLORS.dark }}
+                        containerStyle={{
+                            ...styles.socialButtonContainer,
+                            marginLeft: SIZES.radius
+                        }}
+                    />
+                </View>
+            </View>
+        )
+    }
 
     return (
         <View style={{
@@ -538,24 +585,15 @@ const AuthMain = () => {
             >
                 {renderAuthContainer()}
 
-                {/* Country Modal */}
-                {renderCountryModal()}
             </View>
 
-            {/* <TextButton
-                label="Toggle"
-                onPress={() => {
-                    if (animationState.current === 'signIn') {
-                        animationState.transitionTo('signUp')
-                        setMode('signUp')
-                    } else {
-                        animationState.transitionTo('signIn')
-                        setMode("signIn")
-                    }
-                }}
-            /> */}
-
             {renderAuthContainerFooter()}
+
+            {/* Social Logins */}
+            {mode == "signIn" && renderSocialLogins()}
+
+            {/* Country Modal */}
+            {renderCountryModal()}
         </View>
     )
 }
@@ -567,6 +605,14 @@ const styles = StyleSheet.create({
         padding: SIZES.padding,
         borderRadius: SIZES.radius,
         backgroundColor: COLORS.light,
+    },
+    socialButtonContainer: {
+        width: 55,
+        height: 55,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: SIZES.radius,
+        backgroundColor: COLORS.grey20
     }
 })
 
