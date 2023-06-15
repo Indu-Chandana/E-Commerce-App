@@ -28,7 +28,7 @@ import {
     SIZES
 } from "../../constants"
 
-const AuthMain = () => {
+const AuthMain = ({ navigation }) => {
 
     const [mode, setMode] = React.useState("signIn")
     // Country
@@ -203,7 +203,9 @@ const AuthMain = () => {
                             labelStyle={{
                                 ...FONTS.h3
                             }}
-                            onPress={() => console.log("Log In")}
+                            onPress={() => {
+                                navigation.navigate("Home")
+                            }}
                         />
 
                     </View>
