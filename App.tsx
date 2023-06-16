@@ -6,7 +6,8 @@ import {
   Welcome,
   Walkthrough,
   AuthMain,
-  Home
+  Home,
+  ScanProduct
 } from "./screens";
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ const App = () => {
         <Stack.Screen name="Walkthrough" component={Walkthrough} />
         <Stack.Screen name="AuthMain" component={AuthMain} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="ScanProduct" component={ScanProduct} />
       </Stack.Navigator>
     </NavigationContainer>
   )

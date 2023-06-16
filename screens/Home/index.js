@@ -5,7 +5,7 @@ import {
 
 import { TextButton } from "../../components"
 
-const Home = () => {
+const Home = ({ navigation }) => {
     return (
         <View
 
@@ -16,6 +16,7 @@ const Home = () => {
             }}>
             <TextButton
                 label="Scan"
+                onPress={() => navigation.navigate("ScanProduct")}
             />
 
         </View>
