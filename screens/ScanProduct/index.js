@@ -3,8 +3,10 @@ import {
     View,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Linking
 } from 'react-native'
+import { Camera, useCameraDevices } from 'react-native-vision-camera'
 
 import {
     IconButton,
@@ -18,6 +20,22 @@ import {
 const ScanProduct = ({ navigation }) => {
     // State
     const [selectedOption, setSelectedOption] = React.useState(constants.scan_product_option.camera)
+
+    // Camera
+    const devices = useCameraDevices(); // get access to the device camera
+    const device = devices.back; // get access to the back camera
+
+    // Handler
+    const requestCameraPermission = React.useCallback(async () => {
+        const permission = await Camera.requestCameraPermission();
+
+        if (permission === 'denied') await Linking.openSettings();
+    }, []);
+
+    React.useState(() => {
+        requestCameraPermission();
+    }, []);
+
 
     // Render
     function renderHeader() {
@@ -127,6 +145,64 @@ const ScanProduct = ({ navigation }) => {
         )
     }
 
+    function renderCamera() {
+        if (device == null) {
+            return (
+                <View
+                    style={{
+                        flex: 1
+                    }}
+                >
+
+                </View>
+            )
+        } else {
+            return (
+                <View style={{
+                    flex: 1
+                }}>
+                    <Camera
+                        style={{ flex: 1 }}
+                        device={device}
+                        isActive={true}
+                        enableZoomGesture
+                    />
+
+                    {/* Scan Button */}
+                    {selectedOption == constants.scan_product_option.camera &&
+                        <View
+                            style={{
+                                position: 'absolute',
+                                alignItems: 'center',
+                                bottom: SIZES.padding,
+                                left: 0,
+                                right: 0,
+                            }}
+                        >
+                            {/* <Text>Hellooooooooooooooooooooooooooooooooooooo</Text> */}
+                            <IconButton
+                                icon={icons.scan}
+                                containerStyle={{
+                                    height: 60,
+                                    width: 60,
+                                    borderRadius: 30,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: COLORS.light
+                                }}
+                                iconStyle={{
+                                    width: 50,
+                                    height: 50,
+                                    tintColor: COLORS.primary
+                                }}
+                            />
+                        </View>
+                    }
+                </View>
+            )
+        }
+    }
+
     return (
         <View
             style={{
@@ -136,6 +212,9 @@ const ScanProduct = ({ navigation }) => {
 
             {/* Header */}
             {renderHeader()}
+
+            {/* Camera */}
+            {renderCamera()}
 
             {/* Footer */}
             {renderFooter()}
