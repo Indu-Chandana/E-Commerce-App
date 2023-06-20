@@ -7,6 +7,9 @@ import {
     Linking
 } from 'react-native'
 import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import { MotiView, useAnimationState } from 'moti'
+import { Shadow } from 'react-native-shadow-2'
+import { Svg, Defs, Rect, Mask } from 'react-native-svg'
 
 import {
     IconButton,
@@ -32,7 +35,33 @@ const ScanProduct = ({ navigation }) => {
         if (permission === 'denied') await Linking.openSettings();
     }, []);
 
+    // Moti
+    const loaderAnimationState = useAnimationState({
+        start: {
+            opacity: 1
+        },
+        stop: {
+            opacity: 0
+        }
+    })
+
+    const productAnimationState = useAnimationState({
+        hide: {
+            opacity: 0,
+            translateY: -10
+        },
+        show: {
+            opacity: 1,
+            translateY: 10
+        }
+    })
+
     React.useState(() => {
+        // Animation
+        loaderAnimationState.transitionTo('stop')
+        productAnimationState.transitionTo('hide')
+
+        // Permissions
         requestCameraPermission();
     }, []);
 
@@ -145,6 +174,30 @@ const ScanProduct = ({ navigation }) => {
         )
     }
 
+    function CameraFrame() {
+        return (
+            <Svg
+                height="100%"
+                width="100%"
+            >
+                <Defs>
+                    <Mask
+                        id='mask'
+                        x="0"
+                        y="0"
+                        height="100%"
+                        width="100%"
+                    >
+                        <Rect x="100%" width="100%" fill="#fff" />
+                        <Rect x="18%" y="30%" width="250"
+                            height="250" fill="black" />
+                    </Mask>
+                </Defs>
+            </Svg>
+        )
+
+    }
+
     function renderCamera() {
         if (device == null) {
             return (
@@ -167,6 +220,30 @@ const ScanProduct = ({ navigation }) => {
                         isActive={true}
                         enableZoomGesture
                     />
+
+                    {/* Loading / Searching View */}
+                    <MotiView
+                        state={loaderAnimationState}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: COLORS.dark60
+                        }}
+                    >
+                        <Text
+                            style={{
+                                ...FONTS.h2,
+                                color: COLORS.light
+                            }}
+                        >
+                            Searching
+                        </Text>
+                    </MotiView>
 
                     {/* Scan Button */}
                     {selectedOption == constants.scan_product_option.camera &&
@@ -195,9 +272,99 @@ const ScanProduct = ({ navigation }) => {
                                     height: 50,
                                     tintColor: COLORS.primary
                                 }}
+                                onPress={() => {
+                                    loaderAnimationState.transitionTo('start')
+
+                                    setTimeout(() => {
+                                        loaderAnimationState.transitionTo('stop')
+                                        productAnimationState.transitionTo('show')
+                                    }, 2000)
+                                }}
                             />
                         </View>
                     }
+
+                    {/* QR code */}
+                    {selectedOption == constants.scan_product_option.qr &&
+                        <View style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        }}>
+                            <CameraFrame />
+                        </View>}
+
+                    {/* Product */}
+                    <MotiView
+                        state={productAnimationState}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: 120,
+                            paddingVertical: SIZES.radius,
+                            alignItems: 'center',
+                            zIndex: 1,
+                        }}
+                    >
+                        <Shadow>
+                            <TouchableOpacity
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    width: SIZES.width - (SIZES.padding * 2),
+                                    alignItems: 'center',
+                                    paddingHorizontal: SIZES.radius,
+                                    borderRadius: SIZES.radius,
+                                    backgroundColor: COLORS.light
+
+                                }}
+                            >
+                                {/* Image */}
+                                <Image
+                                    source={images.luggage_01}
+                                    style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 30
+                                    }}
+                                />
+
+                                {/* Product name & SKU */}
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        marginLeft: SIZES.radius
+                                    }}>
+                                    <Text
+                                        style={{
+                                            ...FONTS.h3,
+                                            color: COLORS.primary
+                                        }}
+                                    >Vali Sakos</Text>
+                                    <Text
+                                        style={{
+                                            ...FONTS.body4
+                                        }}
+                                    >SKU: 12345678</Text>
+                                </View>
+
+                                <Text
+                                    style={{
+                                        ...FONTS.h3,
+                                        color: COLORS.primary
+                                    }}
+                                >
+                                    $ 67.00
+                                </Text>
+
+                            </TouchableOpacity>
+                        </Shadow>
+
+                    </MotiView>
                 </View>
             )
         }
