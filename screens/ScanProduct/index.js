@@ -9,7 +9,7 @@ import {
 import { Camera, useCameraDevices } from 'react-native-vision-camera'
 import { MotiView, useAnimationState } from 'moti'
 import { Shadow } from 'react-native-shadow-2'
-import { Svg, Defs, Rect, Mask } from 'react-native-svg'
+import Svg, { Defs, Rect, Mask } from 'react-native-svg'
 
 import {
     IconButton,
@@ -55,6 +55,10 @@ const ScanProduct = ({ navigation }) => {
             translateY: 10
         }
     })
+
+    // Barcode
+    const [Barcode, setBarcode] = React.useState('')
+    const [isScanned, setIsScanned] = React.useState(false)
 
     React.useState(() => {
         // Animation
@@ -176,24 +180,32 @@ const ScanProduct = ({ navigation }) => {
 
     function CameraFrame() {
         return (
-            <Svg
-                height="100%"
-                width="100%"
-            >
+            <Svg height="100%" width="100%" >
                 <Defs>
-                    <Mask
-                        id='mask'
-                        x="0"
-                        y="0"
-                        height="100%"
-                        width="100%"
-                    >
-                        <Rect x="100%" width="100%" fill="#fff" />
-                        <Rect x="18%" y="30%" width="250"
-                            height="250" fill="black" />
+                    <Mask id='mask' x="0" y="0" height="100%" width="100%">
+                        <Rect x="0" y="0" width="100%" height="100%" fill="#fff" />
+                        <Rect x="18%" y="30%" width="250" height="250" fill="black" />
                     </Mask>
                 </Defs>
+                <Rect
+                    height="100%"
+                    width="100%"
+                    fill="rgba(0, 0, 0, 0.8)"
+                    mask='url(#mask)'
+                />
+
+                {/* Frame Border */}
+                <Rect
+                    x="18%"
+                    y="30%"
+                    width="250"
+                    height="250"
+                    strokeWidth="5"
+                    stroke="#fff"
+                    fill="transparent"
+                />
             </Svg>
+
         )
 
     }
